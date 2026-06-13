@@ -24,7 +24,7 @@ const __dirname = path.dirname(__filename);
 
 const publicDir = path.join(process.cwd(), 'public');
 
-app.use('/api/webhooks/clerk',express.json({ type: 'application/json' }), clerkWebhook); // Parse JSON for Clerk webhooks
+app.use('/api/webhooks/clerk',express.raw({ type: 'application/json' }), clerkWebhook); // Parse JSON for Clerk webhooks
 
 app.use(express.json());
 

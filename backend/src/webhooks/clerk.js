@@ -1,7 +1,7 @@
 import express from 'express';
 import User from '../models/user.js';
 import {verifyWebhook} from "@clerk/backend/webhooks";
-import { clerkMiddleware } from '@clerk/express';
+// import { clerkMiddleware } from '@clerk/express';
 
 const router = express.Router();
 
@@ -31,12 +31,12 @@ router.post("/", async (req, res) => {
         u.email_addresses?.find((e) => e.id === u.primary_email_address_id)?.email_address ??
         u.email_addresses?.[0]?.email_address;
 
-      const fullName =
+      const name =
         [u.first_name, u.last_name].filter(Boolean).join(" ") || u.username || email?.split("@")[0];
 
       await User.findOneAndUpdate(
         { clerkId: u.id },
-        { clerkId: u.id, email, fullName, profilePic: u.image_url },
+        { clerkId: u.id, email, name, profile_picture: u.image_url },
         { new: true, upsert: true, setDefaultsOnInsert: true },
       );
     }
