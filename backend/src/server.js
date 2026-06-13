@@ -33,6 +33,11 @@ app.use(
 
 app.use(clerkMiddleware());
 
+app.get("/health", (req, res) => {
+  res.status(200).json({ ok: true });
+});
+
+
 // Serve frontend build if it exists
 if (fs.existsSync(publicDir)) {
   app.use(express.static(publicDir));
@@ -44,9 +49,6 @@ if (fs.existsSync(publicDir)) {
   });
 }
 
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'ok' });
-});
 
 
 app.listen(PORT, async () => {
