@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url';
 import { clerkMiddleware } from '@clerk/express';
 
 import connectDB from './libs/db.js';
+import job from './libs/cron.js';
 
 const app = express();
 
@@ -55,6 +56,12 @@ app.listen(PORT, async () => {
   try {
     await connectDB();
     console.log(`Server is running on port ${PORT}`);
+
+    if (process.env.NODE_ENV === 'production') {
+      job.start();
+      console.log('Cron job started');
+    } 
+
   } catch (error) {
     console.error('Database connection failed:', error);
   }
