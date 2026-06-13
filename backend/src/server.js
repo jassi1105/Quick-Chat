@@ -9,6 +9,7 @@ import { clerkMiddleware } from '@clerk/express';
 
 import connectDB from './libs/db.js';
 import job from './libs/cron.js';
+import clerkWebhook from './webhooks/clerk.js';
 
 const app = express();
 
@@ -22,6 +23,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const publicDir = path.join(process.cwd(), 'public');
+
+app.use('/api/webhooks/clerk',express.json({ type: 'application/json' }), clerkWebhook); // Parse JSON for Clerk webhooks
 
 app.use(express.json());
 
