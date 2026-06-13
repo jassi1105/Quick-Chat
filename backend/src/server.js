@@ -44,6 +44,11 @@ if (fs.existsSync(publicDir)) {
   });
 }
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
+
 app.listen(PORT, async () => {
   try {
     await connectDB();
