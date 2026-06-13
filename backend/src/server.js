@@ -1,24 +1,23 @@
 const express=require('express');
 const env=require('dotenv');
 const mongoose=require('mongoose');
+const cors=require('cors');
+
+import { clerkMiddleware } from '@clerk/express'
+const connectDB=require('./libs/db');
+
+
 env.config();
-
-
+const PORT=process.env.PORT;
+const FRONTEND_URL=process.env.FRONTEND_URL;
 
 const app=express();
 
-mongoose.connect(process.env.MONGO_URI).then(()=>{
+app.use(express.json());
+app.use(cors({ origin: FRONTEND_URL, credentials: true }));
+app.use(clerkMiddleware());
 
-    console.log("Database connected successfully");
-
-}).catch((err)=>{
-
-    console.log("Error while connecting to database " + err);
-
-});
-
-app.listen(process.env.PORT,()=>{
-
+app.listen(PORT,()=>{
+    connectDB();
     console.log("server is running on port " + process.env.PORT);
-
 });
