@@ -1,36 +1,54 @@
-const express=require('express');
-const env=require('dotenv');
-const mongoose=require('mongoose');
-const cors=require('cors');
-const fs = require('fs');
-const path = require('path');
-import { clerkMiddleware } from '@clerk/express'
-const connectDB=require('./libs/db');
+import express from 'express';
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { clerkMiddleware } from '@clerk/express';
 
-const app=express();
+import connectDB from './libs/db.js';
 
-env.config();
-const PORT=process.env.PORT;
-const FRONTEND_URL=process.env.FRONTEND_URL;
+const app = express();
 
-const publicDir=path.join(process.cwd(),'public');
+dotenv.config();
 
+const PORT = process.env.PORT || 3001;
+const FRONTEND_URL = process.env.FRONTEND_URL;
 
+// __dirname replacement for ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+const publicDir = path.join(process.cwd(), 'public');
 
 app.use(express.json());
-app.use(cors({ origin: FRONTEND_URL, credentials: true }));
+
+app.use(
+  cors({
+    origin: FRONTEND_URL,
+    credentials: true,
+  })
+);
+
 app.use(clerkMiddleware());
 
+// Serve frontend build if it exists
+if (fs.existsSync(publicDir)) {
+  app.use(express.static(publicDir));
 
-if (!fs.existsSync(publicDir)) {
-    app.use(express.static(publicDir));
-    app.get("/{*any}",(req,res,next)=>{
-        res.sendFile(path.join(publicDir,"index.html"),(err)=>next(err));
+  app.get('/{*any}', (req, res, next) => {
+    res.sendFile(path.join(publicDir, 'index.html'), (err) => {
+      if (err) next(err);
     });
+  });
 }
 
-app.listen(PORT,()=>{
-    connectDB();
-    console.log("server is running on port " + process.env.PORT);
+app.listen(PORT, async () => {
+  try {
+    await connectDB();
+    console.log(`Server is running on port ${PORT}`);
+  } catch (error) {
+    console.error('Database connection failed:', error);
+  }
 });
