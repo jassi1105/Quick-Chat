@@ -2,6 +2,7 @@
 import User from '../models/user.js';
 import Message from '../models/message.js';
 import { hasImageKitConfig, uploadChatMedia } from "../libs/imagekit.js";
+import { getReceiverSocketId } from '../libs/socket.js'; 
 
 export const getUsersForSidebar=async (req,res)=>{
 try{
@@ -105,7 +106,10 @@ export const sendMessage=async (req,res)=>{
         });
         await newMessage.save();
 
-        //todo:socket io
+        const receiverSocketId=getReceiverSocketId(receiverId);
+        if(receiverSocketId){
+            server.to(receiverSocketId).emit("newMessage",newMessage);
+        }
 
 
 
