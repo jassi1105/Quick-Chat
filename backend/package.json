@@ -8,7 +8,7 @@
     "build": "rm -rf dist && cp -R src dist",
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
-    "db:seed":"node src/seeds/user.seed.js"
+    "db:seed": "node src/seeds/user.seed.js"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +23,7 @@
     "mongoose": "^9.7.0",
     "multer": "^2.1.1",
     "nodemon": "^3.1.14",
-    "socket.io": "^4.8.3"
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3"
   }
 }
